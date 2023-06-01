@@ -57,13 +57,6 @@ connectPassport()
 // Serve static files from the "build" directory
 app.use(express.static(join(__dirname, "client", "build")));
 
-// Use cors middleware
-// app.use(cors());
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true,
-}));
-
 //Api Routes
 app.use("/api", allRoutes)
 

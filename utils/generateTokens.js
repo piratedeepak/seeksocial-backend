@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken'
 
 //generate access token
-export const sendTokens = (user, res) => {
+export const sendTokens = (user) => {
+   try {
     const accessToken = jwt.sign({
         id:user._id
     }, process.env.ACCESS_SECRET, {expiresIn: '15m'})
@@ -10,16 +11,21 @@ export const sendTokens = (user, res) => {
         // httpOnly:true,
         maxAge: 15 * 60 * 1000
     }
-    res.status(200).cookie('accessToken', accessToken, accessOptions)
+    // res.status(200).cookie('accessToken', accessToken, accessOptions)
 
     const refreshToken = jwt.sign({
         id:user._id
-    }, process.env.REFRESH_SECRET, {expiresIn: '15d'})
+    }, process.env.REFRESH_SECRET, {expiresIn: '5d'})
 
     const options={
         // httpOnly:true,
         maxAge:15*24*60*60*1000
     }  
-    res.status(200).cookie('refreshToken', refreshToken, options)
+    // res.status(200).cookie('refreshToken', refreshToken, options)
+
+    return {accessToken:accessToken, refreshToken:refreshToken}
+   } catch (error) {
+    return error.message
+   }
 
 }
