@@ -30,7 +30,7 @@ export const register = async (req, res, next) => {
 
 export const refreshTheToken = async (req, res, next) => {
   try {
-    const refreshToken = req.headers.authorization;
+    const refreshToken = req.headers['x-refresh-token'];
 
     const accessToken = await userService.refreshTheToken(refreshToken);
 
