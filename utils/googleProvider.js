@@ -4,7 +4,7 @@ import { User } from "../seekSocial/models/userModel.js";
 import { sendTokens } from "./generateTokens.js";
 
 export const connectPassport = () => {
-  console.log(process.env.GOOGLE_CLIENT_ID)
+//   console.log(process.env.GOOGLE_CLIENT_ID)
   passport.use(
     new GoogleStrategy({
       clientID: process.env.GOOGLE_CLIENT_ID,
