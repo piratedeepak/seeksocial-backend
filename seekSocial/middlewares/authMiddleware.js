@@ -2,8 +2,6 @@ import { User } from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import { responseCommon } from "../../utils/resComm.js";
 
-import jwt from 'jsonwebtoken';
-
 export const isAuthenticated = async (req, res, next) => {
   try {
     const authToken = req.headers.authorization;
