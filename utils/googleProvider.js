@@ -1,6 +1,7 @@
 import passport from "passport"
 import { Strategy as GoogleStrategy } from 'passport-google-oauth2';
 import { User } from "../seekSocial/models/userModel.js";
+import { sendTokens } from "./generateTokens.js";
 
 export const connectPassport = () => {
   passport.use(
@@ -19,21 +20,22 @@ export const connectPassport = () => {
           googleId:profile.id,
           email:profile.email
         })
-        console.log(newUser)
-        return done(null, newUser)
+        const tokens = sendTokens(user)
+        console.log(tokens, "new user")
+        return done(null, tokens)
       }else{
-        console.log(user)
-        return done(null, user)
+        const tokens = sendTokens(user)
+        console.log(tokens, "found user")
+        return done(null, tokens)
       }
     }
     ))
 
-    passport.serializeUser((user, done) =>{
-      done(null, user.id)
+    passport.serializeUser((tokens, done) =>{
+      return done(null, tokens.accessToken)
     })
 
-    passport.deserializeUser(async(id, done)=>{
-      const user = await User.findById(id)
-      done(null, user)
+    passport.deserializeUser(async(token, done)=>{
+      return done(null, token)
     })
 }

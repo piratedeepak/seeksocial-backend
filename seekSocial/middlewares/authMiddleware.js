@@ -1,25 +1,24 @@
-import ErrorHandler from "../../utils/errorHandler.js"
 import { User } from '../models/userModel.js'
 import  jwt  from 'jsonwebtoken'
+import { responseCommon } from '../../utils/resComm.js';
 
 export const isAuthenticated = async(req, res, next) => {
   try {
-    const accessToken = req.cookies['accessToken']
+    const authToken = req.headers.authorization;
 
-  if(!accessToken) return res.status(401).json({
-    success:false,
-    message: "Unauthorized"
-  })
+  if(!authToken) return responseCommon(res, 401, "User Not Logged In", null, false)
 
-  const decode = jwt.verify(accessToken, process.env.ACCESS_SECRET)
+  const accessToken = authToken.split(' ')[1];
+
+  if(!accessToken) return responseCommon(res, 401, "Unauthorized", null, false)
+
+
+  const decode = await jwt.verify(accessToken, process.env.ACCESS_SECRET)
 
   req.user = await User.findById(decode.id)
   next()
   } catch (error) {
-    res.status(500).json({
-      success:false,
-      message:error.message
-    })
+    responseCommon(res, 500, "Internal Server Error", null, false)
   }
 }
 
