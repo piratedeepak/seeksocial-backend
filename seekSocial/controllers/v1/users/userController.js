@@ -19,7 +19,7 @@ export const login = async (req, res, next) => {
 export const register = async (req, res, next) => {
   try {
     const user = await userService.register(req.body);
-    sendTokens(user)
+    const tokens = sendTokens(user)
 
     return responseCommon(res, 200, "Registered Successfully", tokens, false)
 
@@ -30,7 +30,7 @@ export const register = async (req, res, next) => {
 
 export const refreshTheToken = async (req, res, next) => {
   try {
-    const refreshToken = req.cookies["refreshToken"];
+    const refreshToken = req.headers.authorization;
 
     const accessToken = await userService.refreshTheToken(refreshToken);
 
@@ -41,10 +41,6 @@ export const refreshTheToken = async (req, res, next) => {
 
     return responseCommon(res, 200, "Access token has been refreshed", accessToken, true)
 
-    res.status(200).json({
-      message: "Access token has been refreshed",
-      success: true
-    });
   } catch (error) {
     return responseCommon(res, 400, error.message, null, false)
 
