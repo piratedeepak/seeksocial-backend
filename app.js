@@ -33,7 +33,7 @@ if(process.env.NODE_ENV === "production"){
 }else{
   corsOptions.origin = "*"
 }
-app.use(cors({corsOptions}));
+app.use(cors(corsOptions));
 
 
 app.use(session({
