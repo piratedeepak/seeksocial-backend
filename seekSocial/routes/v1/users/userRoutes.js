@@ -21,7 +21,7 @@ router.route('/google/login').get(passport.authenticate("google",{scope:['profil
 router.route('/google/callback').get(passport.authenticate("google", {
     scope:["profile", 'email'],
     failureRedirect:`${ process.env.FRONTEND_URL}/login`,
-    successRedirect:process.env.FRONTEND_URL,
+    successRedirect: process.env.FRONTEND_URL,
 }), sendGoogleLoginToken)
 
 

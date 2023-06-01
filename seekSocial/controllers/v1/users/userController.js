@@ -21,7 +21,7 @@ export const register = async (req, res, next) => {
     const user = await userService.register(req.body);
     const tokens = sendTokens(user)
 
-    return responseCommon(res, 200, "Registered Successfully", tokens, false)
+    return responseCommon(res, 200, "Registered Successfully", tokens, true)
 
   } catch (error) {
     return responseCommon(res, 400, error.message, null, false)
@@ -63,7 +63,7 @@ export const filterUserData = async (req, res) => {
     const client = await getElasticClient();
     const response = await userService.filterService(client, data);
 
-    return responseCommon(res, 200, "", response.hits, true)
+    return responseCommon(res, 200, null, response.hits, true)
   } catch (error) {
     return responseCommon(res, 500, error.message, null, false)
   }
@@ -98,6 +98,7 @@ export const changePassword = async (req, res, next) => {
 
 export const sendGoogleLoginToken = async (req, res) => {
  try{
+  res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     return responseCommon(res, 200, "Login Successfully", tokens, true)
     
   } catch (error) {

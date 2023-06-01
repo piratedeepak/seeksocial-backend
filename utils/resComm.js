@@ -17,5 +17,5 @@ export const  responseCommon = (res, statusCode, message, data = null, success =
     };
   }
 
-  res.status(statusCode).json(response);
+  return res.status(statusCode).json(response);
 }
