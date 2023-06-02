@@ -27,11 +27,12 @@ app.use(express.urlencoded({
 }))
 
 const corsOptions = {}
-if(process.env.NODE_ENV === "production"){
-     corsOptions.origin = process.env.FRONTEND_URL,
-     corsOptions.credentials = true
-}else{
-  corsOptions.origin = "*"
+if (process.env.NODE_ENV === "production") {
+  corsOptions.origin = process.env.FRONTEND_URL;
+  corsOptions.credentials = true;
+} else {
+  corsOptions.origin = true;
+  corsOptions.credentials = true;
 }
 app.use(cors(corsOptions));
 
