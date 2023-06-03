@@ -26,10 +26,8 @@ const schema = new mongoose.Schema({
     googleId:{
         type:String,
     },
-    passwordResetToken:{
-        type:String
-    },
-    expirePasswordToken:{type:String}
+    resetPasswordToken:String,
+    resetPasswordExpire:String,
 },
     {
         timestamps: true
@@ -49,12 +47,14 @@ schema.methods.comparePassword = async function(password){
     return await bcrypt.compare(password, this.password)
 }
 
-schema.methods.resetPasswordToken = async function(){
-     const resetPasswordToken = crypto.randomBytes(20).toString("hex")
-     this.passwordResetToken = crypto.createHash("sha256").update(resetPasswordToken).digest("hex")
-     this.expirePasswordToken = Date.now()+10 * 60 * 1000
+schema.methods.getResetToken = async function(){
+    const resetToken = crypto.randomBytes(20).toString("hex")
 
-     return resetPasswordToken;
+   this.resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex")
+
+   this.resetPasswordExpire = Date.now()+15*60*1000;
+
+    return resetToken;
 }
 
 export const User = mongoose.model("User", schema)

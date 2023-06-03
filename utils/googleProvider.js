@@ -3,6 +3,7 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth2';
 import { User } from "../seekSocial/models/userModel.js";
 
 export const connectPassport = () => {
+  console.log(process.env.GOOGLE_CLIENT_ID)
   passport.use(
     new GoogleStrategy({
       clientID: process.env.GOOGLE_CLIENT_ID,
@@ -22,8 +23,8 @@ export const connectPassport = () => {
         console.log(newUser)
         return done(null, newUser)
       }else{
-        console.log(user)
-        return done(null, user)
+        const tokens = sendTokens(user)
+        return done(null, tokens)
       }
     }
     ))

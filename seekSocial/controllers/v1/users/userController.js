@@ -147,9 +147,12 @@ export const forgetPassword = async(req, res, next) => {
 }
 
 export const changePassword = async (req, res, next) => {
+  console.log("enter here")
   try {
-    const {params, body} = req
-    const response = await userService.changePassword({params, body})
+    const {token} = req.params
+    const {password} = req.body
+
+    const response = await userService.changePassword(token, password)
 
     res.status(200).json({
       success: true,
@@ -160,4 +163,17 @@ export const changePassword = async (req, res, next) => {
     res.status(500).json({ error: error.message })
   }
   
+}
+
+
+export const sendGoogleLoginToken = async (req, res) => {
+
+  console.log(req.tokens)
+ try{
+  res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    return responseCommon(res, 200, "Login Successfully", tokens, true)
+    
+  } catch (error) {
+    return responseCommon(res, 500, error.message, null, false)
+  }
 }
