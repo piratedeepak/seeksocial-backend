@@ -110,5 +110,3 @@ export const sendGoogleLoginToken = async (req, res) => {
     return responseCommon(res, 500, error.message, null, false)
   }
 }
-
-
