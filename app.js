@@ -27,13 +27,14 @@ app.use(express.urlencoded({
 }))
 
 const corsOptions = {}
-if(process.env.NODE_ENV === "production"){
-     corsOptions.origin = process.env.FRONTEND_URL,
-     corsOptions.credentials = true
-}else{
-  corsOptions.origin = "*"
+if (process.env.NODE_ENV === "production") {
+  corsOptions.origin = process.env.FRONTEND_URL;
+  corsOptions.credentials = true;
+} else {
+  corsOptions.origin = true;
+  corsOptions.credentials = true;
 }
-app.use(cors({corsOptions}));
+app.use(cors(corsOptions));
 
 
 app.use(session({
@@ -56,13 +57,6 @@ connectPassport()
 
 // Serve static files from the "build" directory
 app.use(express.static(join(__dirname, "client", "build")));
-
-// Use cors middleware
-// app.use(cors());
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true,
-}));
 
 //Api Routes
 app.use("/api", allRoutes)
