@@ -26,7 +26,7 @@ export const connectPassport = () => {
         return done(null, tokens)
       }else{
         const tokens = sendTokens(user)
-        // console.log(tokens, "found user")
+        console.log(tokens, "found user")
         return done(null, tokens)
       }
     }

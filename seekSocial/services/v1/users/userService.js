@@ -168,10 +168,10 @@ const forgetPassword = async (params) => {
 
 const changePassword = async (token, password) => {
   try {
-    if(!token) throw Error("Token is not available")
+    if (!token) throw Error("Token is not available")
 
     const resetPasswordToken = crypto.createHash("sha256").update(`${token}`).digest("hex")
-    
+
     const user = await User.findOne({
       resetPasswordToken,
       resetPasswordExpire: {
@@ -180,7 +180,7 @@ const changePassword = async (token, password) => {
     })
     if (!user) throw Error("Token is Invalid or has been expired")
 
-    if(!password) throw Error("Please enter the password")
+    if (!password) throw Error("Please enter the password")
 
     user.password = password
     user.resetPasswordToken = undefined
