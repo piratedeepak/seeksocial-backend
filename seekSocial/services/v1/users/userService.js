@@ -1,6 +1,7 @@
 import { sendEmail } from "../../../../utils/sendMail.js";
 import { User } from "../../../models/userModel.js";
 import jwt from "jsonwebtoken"
+import crypto from "crypto"
 
 
 const login = async (params) => {
@@ -146,14 +147,14 @@ const forgetPassword = async (params) => {
 
     if (!user) throw Error("User not Registered")
 
-    const resetPasswordToken = await user.resetPasswordToken()
+    const resetToken = await user.getResetToken()
 
     await user.save();
 
 
     const dynamicTemplateData = {
       "name": user.name,
-      "reset_link": `${process.env.FRONTEND_URL}/resetpassword?token=${resetPasswordToken}`
+      "reset_link": `${process.env.FRONTEND_URL}/resetpassword?token=${resetToken}`
     }
    
    await sendEmail(user.email, "Reset Password", process.env.RESET_TEMPLATE_ID,dynamicTemplateData)
@@ -165,23 +166,25 @@ const forgetPassword = async (params) => {
 }
 }
 
-const changePassword = async (params) => {
+const changePassword = async (token, password) => {
   try {
-    const { token } = params
+    if (!token) throw Error("Token is not available")
 
-    const resetPasswordToken = crypto.createHash("sha256").update(token).digest("hex")
+    const resetPasswordToken = crypto.createHash("sha256").update(`${token}`).digest("hex")
 
     const user = await User.findOne({
       resetPasswordToken,
-      expirePasswordToken: {
+      resetPasswordExpire: {
         $gt: Date.now()
       },
     })
     if (!user) throw Error("Token is Invalid or has been expired")
 
-    user.password = req.body.password
-    user.passwordResetToken = undefined
-    user.expirePasswordToken = undefined
+    if (!password) throw Error("Please enter the password")
+
+    user.password = password
+    user.resetPasswordToken = undefined
+    user.resetPasswordExpire = undefined
     user.save()
 
     return true

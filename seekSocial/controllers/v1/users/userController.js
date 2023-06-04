@@ -21,7 +21,7 @@ export const register = async (req, res, next) => {
     const user = await userService.register(req.body);
     const tokens = sendTokens(user)
 
-    return responseCommon(res, 200, "Registered Successfully", tokens, true)
+    return responseCommon(res, 200, "Registered Successfully", tokens, false)
 
   } catch (error) {
     return responseCommon(res, 400, error.message, null, false)
@@ -83,8 +83,10 @@ export const forgetPassword = async(req, res, next) => {
 
 export const changePassword = async (req, res, next) => {
   try {
-    const {params, body} = req
-    const response = await userService.changePassword({params, body})
+    const { token } = req.params
+    const { password } = req.body
+
+    const response = await userService.changePassword(token, password)
 
     return responseCommon(res, 200, "Password Updated Successfully", response, true)
 
@@ -97,6 +99,9 @@ export const changePassword = async (req, res, next) => {
 
 
 export const sendGoogleLoginToken = async (req, res) => {
+
+  const tokens = req.user
+  
  try{
   res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     return responseCommon(res, 200, "Login Successfully", tokens, true)
