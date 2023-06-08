@@ -11,6 +11,6 @@ export const sendEmail = async (receiver, subject, templateId, dynamicTemplateDa
     }
     return sgMail.send(data)
   } catch (error) {
-    return error
+    return error.message
   }
 }

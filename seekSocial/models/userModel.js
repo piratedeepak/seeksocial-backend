@@ -23,13 +23,11 @@ const schema = new mongoose.Schema({
         minLength: [6],
         select: false, // when we get user through api we didn't get the password field
     },
-    googleId:{
-        type:String,
+    googleId: {
+        type: String,
     },
-    passwordResetToken:{
-        type:String
-    },
-    expirePasswordToken:{type:String}
+    resetPasswordToken: String,
+    resetPasswordExpire: String,
 },
     {
         timestamps: true
@@ -37,24 +35,26 @@ const schema = new mongoose.Schema({
 )
 
 //hash the password before saving in the schema
-schema.pre("save", async function(next){
-    if(!this.isModified("password")) return next()
-    const hashedPassword = await bcrypt.hash(this.password,10)
+schema.pre("save", async function (next) {
+    if (!this.isModified("password")) return next()
+    const hashedPassword = await bcrypt.hash(this.password, 10)
     this.password = hashedPassword
     next()
 })
 
 //compare the saved password and requested password
-schema.methods.comparePassword = async function(password){
+schema.methods.comparePassword = async function (password) {
     return await bcrypt.compare(password, this.password)
 }
 
-schema.methods.resetPasswordToken = async function(){
-     const resetPasswordToken = crypto.randomBytes(20).toString("hex")
-     this.passwordResetToken = crypto.createHash("sha256").update(resetPasswordToken).digest("hex")
-     this.expirePasswordToken = Date.now()+10 * 60 * 1000
+schema.methods.getResetToken = async function () {
+    const resetToken = crypto.randomBytes(20).toString("hex")
 
-     return resetPasswordToken;
+    this.resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex")
+
+    this.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
+
+    return resetToken;
 }
 
 export const User = mongoose.model("User", schema)
