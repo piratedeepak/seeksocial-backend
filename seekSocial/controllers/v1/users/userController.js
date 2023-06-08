@@ -21,7 +21,7 @@ export const register = async (req, res, next) => {
     const user = await userService.register(req.body);
     const tokens = sendTokens(user)
 
-    return responseCommon(res, 200, "Registered Successfully", tokens, false)
+    return responseCommon(res, 200, "Registered Successfully", tokens, true)
 
   } catch (error) {
     return responseCommon(res, 400, error.message, null, false)

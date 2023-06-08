@@ -1,12 +1,25 @@
-import { stripePayment } from "../../../services/v1/Payments/paymentService.js";
+import { responseCommon } from "../../../../utils/resComm.js";
+import { checkoutPayment, getSessionDetails } from "../../../services/v1/Payments/paymentService.js";
 
 
-export const subscription = async () => {
+export const checkout = async (req, res) => {
+   try {
+    const data =  await checkoutPayment(req.user)
+   res.redirect(303, data.url)
+   } catch (error) {
+    return responseCommon(res, 400, error.message, null, false)
+   }
+}
+
+export const sessionDetails = async (req, res) => {
     try {
-        const customer = await stripePayment({email:"example@gmail.com", name:"Pratham"})
-
-    console.log(customer)
+        const sessionId = req.body.sessionId
+        const details = await getSessionDetails(sessionId, req.user)
+         
+        return responseCommon(res, 200, "Subscription SuccessFull", details, true)
+        
     } catch (error) {
-        console.log(error.message)
+        return responseCommon(res, 400, error.message, null, false)
+
     }
 }
