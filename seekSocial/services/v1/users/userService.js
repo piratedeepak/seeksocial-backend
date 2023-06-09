@@ -76,8 +76,12 @@ const logout = async (req, res, next) => {
 
 const getProfile = async (id) => {
   try {
-    const user = await User.findById(id);
-    return {name:user.name, email:user.email, _id:user._id, count:user.searchCount};
+    // const user = await User.findById(id);
+
+    let user = await User.aggregate([{ "$match": {_id:id} }, { "$lookup": { "from": "subscriptions", "localField": "user_id", "foreignField": "_id", "as": "subscription" } }]);
+    user = user[0]
+    
+    return {name:user.name, email:user.email, google_id:user.googleId, search_count:user.searchCount, subscription:user.subscription};
   } catch (error) {
     throw error;
   }
