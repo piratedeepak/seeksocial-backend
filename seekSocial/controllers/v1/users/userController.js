@@ -61,11 +61,11 @@ export const filterUserData = async (req, res) => {
   try {
     const data = req.body;
     const client = await getElasticClient();
-    const response = await userService.filterService(client, data);
+    const response = await userService.filterService(client, data, req.user);
 
     return responseCommon(res, 200, null, response.hits, true)
   } catch (error) {
-    return responseCommon(res, 500, error.message, null, false)
+    return responseCommon(res, 400, error.message, null, false)
   }
 }
 

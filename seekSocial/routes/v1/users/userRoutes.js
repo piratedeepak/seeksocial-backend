@@ -11,7 +11,7 @@ router.route("/register").post(register)
 router.route("/login").post(login)
 router.route('/refreshtoken').post(refreshTheToken)
 router.route('/myprofile').get( isAuthenticated, getProfile)
-router.route('/search').get(filterUserData)
+router.route('/search').get( isAuthenticated, filterUserData)
 router.route('/forgetpassword').post(forgetPassword)
 router.route('/changepassword/:token').put(changePassword)
 

@@ -23,6 +23,7 @@ const schema = new mongoose.Schema({
         minLength: [6],
         select: false, // when we get user through api we didn't get the password field
     },
+    searchCount:{type:Number, default:0},
     googleId: {
         type: String,
     },
