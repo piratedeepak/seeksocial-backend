@@ -6,17 +6,15 @@ const secretKey = 'sk_test_51NBIZaLDZNKPExwpRF24i44L0j3SG1c6hJI6qoB6vLsfJmwYakgv
 export const checkoutPayment = async (params,res) => {
 
   const Stripe = stripe(process.env.STRIPE_SECRET_KEY, {apiVersion:'2022-11-15'})
-
-  if(!price_id || !email) throw Error("Invalid or credentials not found ")
-
-  const {price_id, email} = params;
+  const {id, email} = params;
+  if(!id || !email) throw Error("Invalid or credentials not found ")
   try {
     const session = await Stripe.checkout.sessions.create({
       billing_address_collection: 'auto',
       customer_email: email,
       line_items: [
         {
-          price: price_id,
+          price: id,
           quantity: 1,
         },
       ],
