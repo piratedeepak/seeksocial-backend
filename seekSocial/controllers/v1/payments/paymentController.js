@@ -5,7 +5,7 @@ import { checkoutPayment, getSessionDetails } from "../../../services/v1/Payment
 export const checkout = async (req, res) => {
    try {
     const data =  await checkoutPayment(req.user)
-   res.redirect(303, data.url)
+    return data;
    } catch (error) {
     return responseCommon(res, 400, error.message, null, false)
    }

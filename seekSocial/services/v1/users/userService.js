@@ -78,7 +78,7 @@ const getProfile = async (id) => {
   try {
     // const user = await User.findById(id);
 
-    let user = await User.aggregate([{ "$match": {_id:id} }, { "$lookup": { "from": "subscriptions", "localField": "user_id", "foreignField": "_id", "as": "subscription" } }]);
+    let user = await User.aggregate([{ "$match": {_id:id} }, { "$lookup": { "from": "subscriptions", "localField": "_id", "foreignField": "user_id", "as": "subscription" } }]);
     user = user[0]
     
     return {name:user.name, email:user.email, google_id:user.googleId, search_count:user.searchCount, subscription:user.subscription};

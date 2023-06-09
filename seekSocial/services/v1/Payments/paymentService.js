@@ -1,32 +1,32 @@
 import stripe from "stripe"
 import { Subscription } from "../../../models/SubscriptionModel.js";
 
-const secretKey = 'sk_test_51NFssISC90uGkyXOe4e0pwGf1KtiKJdWwqQNSYNw8DD8sCDd3jAaYQAJbvIrJLCJ9nf1eodd6NccyGI4lZAgG3BN00wecAkpdY'
-
+const secretKey = 'sk_test_51NBIZaLDZNKPExwpRF24i44L0j3SG1c6hJI6qoB6vLsfJmwYakgvfOYh6GHqedC6opLUwGreLQurQHIm70dvEKqz00pLnb2RTp'
 const Stripe = stripe(secretKey, {apiVersion:'2022-11-15'})
 
-const product = 'price_1NGNx9SC90uGkyXO41FwnrWy'
-
-export const checkoutPayment = async (user) => {
-    try {
-      const session = await Stripe.checkout.sessions.create({
-        billing_address_collection: 'auto',
-        customer_email: user.email,
-        line_items: [
-          {
-            price: product,
-            quantity: 1,
-          },
-        ],
-        mode: 'subscription',
-        success_url: `${process.env.FRONTEND_URL}/success?success=true&session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.FRONTEND_URL}?canceled=true`,
-      });
-     return session;
-    } catch (error) {
-      return error
-    }
-  };
+export const checkoutPayment = async (req,res) => {
+  const price_id = req.body.id
+  try {
+    const session = await Stripe.checkout.sessions.create({
+      billing_address_collection: 'auto',
+      customer_email:req.body.email,
+      line_items: [
+        {
+          price: price_id,
+          quantity: 1,
+        },
+      ],
+      mode: 'subscription',
+      success_url: `${process.env.FRONTEND_URL}/success?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.FRONTEND_URL}?canceled=true`,
+    });
+    res.redirect(303, session.url);
+    return session;
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send('Failed to create checkout session');
+  }
+};
 
   export const getSessionDetails = async (sessionId, user) => {
     try {

@@ -32,19 +32,19 @@ export const isSubscribed = async (user) => {
 
     }
 
-    if(subscription.plan_amount/100 === 4.99){
+    if(subscription[0].plan_amount/100 === 4.99){
         profile_count=5000;
         search_count = 100;
 
         return {search_count, profile_count}
     }
-    if(subscription.plan_amount/100 === 9.99){
+    if(subscription[0].plan_amount/100 === 9.99){
         profile_count = 10000;
         search_count = 250;
 
         return {search_count, profile_count}
     }
-    if(subscription.plan_amount/100 ===14.99){
+    if(subscription[0].plan_amount/100 ===14.99){
         profile_count = 50000;
         search_count = 2000
 
@@ -59,8 +59,8 @@ export const subAuthentication = async (req, res, next) => {
   try {
     const authToken = req.headers.authorization;
     const refreshToken = req.headers['x-refresh-token'];
-
-    if (!authToken && !refreshToken) {
+    const accessToken = authToken.split(' ')[1];
+    if (accessToken=='null' && !refreshToken) {
       req.user = undefined
       next()
     }else{
