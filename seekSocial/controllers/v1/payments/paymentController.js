@@ -4,8 +4,8 @@ import { checkoutPayment, getSessionDetails } from "../../../services/v1/Payment
 
 export const checkout = async (req, res) => {
    try {
-    const data =  await checkoutPayment(req.user)
-    return data;
+    const data =  await checkoutPayment(req.body, res)
+    return responseCommon(res, 200, "SuccessFully", data, true)
    } catch (error) {
     return responseCommon(res, 400, error.message, null, false)
    }
@@ -16,7 +16,7 @@ export const sessionDetails = async (req, res) => {
         const sessionId = req.body.sessionId
         const details = await getSessionDetails(sessionId, req.user)
          
-        return responseCommon(res, 200, "Subscription SuccessFull", details, true)
+        return responseCommon(res, 200, "Successfully Subscribed", details, true)
         
     } catch (error) {
         return responseCommon(res, 400, error.message, null, false)

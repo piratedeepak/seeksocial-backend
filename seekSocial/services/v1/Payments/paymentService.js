@@ -2,14 +2,18 @@ import stripe from "stripe"
 import { Subscription } from "../../../models/SubscriptionModel.js";
 
 const secretKey = 'sk_test_51NBIZaLDZNKPExwpRF24i44L0j3SG1c6hJI6qoB6vLsfJmwYakgvfOYh6GHqedC6opLUwGreLQurQHIm70dvEKqz00pLnb2RTp'
-const Stripe = stripe(secretKey, {apiVersion:'2022-11-15'})
 
-export const checkoutPayment = async (req,res) => {
-  const price_id = req.body.id
+export const checkoutPayment = async (params,res) => {
+
+  const Stripe = stripe(process.env.STRIPE_SECRET_KEY, {apiVersion:'2022-11-15'})
+
+  if(!price_id || !email) throw Error("Invalid or credentials not found ")
+
+  const {price_id, email} = params;
   try {
     const session = await Stripe.checkout.sessions.create({
       billing_address_collection: 'auto',
-      customer_email:req.body.email,
+      customer_email: email,
       line_items: [
         {
           price: price_id,
@@ -29,6 +33,9 @@ export const checkoutPayment = async (req,res) => {
 };
 
   export const getSessionDetails = async (sessionId, user) => {
+
+    const Stripe = stripe(process.env.STRIPE_SECRET_KEY, {apiVersion:'2022-11-15'})
+
     try {
       const session = await Stripe.checkout.sessions.retrieve(sessionId);
 
