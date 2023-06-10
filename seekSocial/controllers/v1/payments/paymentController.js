@@ -1,5 +1,5 @@
 import { responseCommon } from "../../../../utils/resComm.js";
-import { checkoutPayment, getSessionDetails } from "../../../services/v1/Payments/paymentService.js";
+import { checkoutPayment, getPlans, getSessionDetails } from "../../../services/v1/Payments/paymentService.js";
 
 
 export const checkout = async (req, res) => {
@@ -9,6 +9,16 @@ export const checkout = async (req, res) => {
    } catch (error) {
     return responseCommon(res, 400, error.message, null, false)
    }
+}
+
+export const getAllPlans = async (req, res) => {
+    try {
+        const plans = await getPlans()
+
+        return responseCommon(res, 200, "All Plans", plans, true)
+    } catch (error) {
+        return responseCommon(res, 400, error.message, null, false)
+    }
 }
 
 export const sessionDetails = async (req, res) => {

@@ -1,7 +1,6 @@
 import stripe from "stripe"
 import { Subscription } from "../../../models/SubscriptionModel.js";
 
-const secretKey = 'sk_test_51NBIZaLDZNKPExwpRF24i44L0j3SG1c6hJI6qoB6vLsfJmwYakgvfOYh6GHqedC6opLUwGreLQurQHIm70dvEKqz00pLnb2RTp'
 
 export const checkoutPayment = async (params,res) => {
 
@@ -30,6 +29,16 @@ export const checkoutPayment = async (params,res) => {
   }
 };
 
+export const getPlans = async () => {
+  const Stripe = stripe(process.env.STRIPE_SECRET_KEY, {apiVersion:'2022-11-15'})
+   try {
+     const allPlans = await Stripe.plans.list()
+     return allPlans.data;
+   } catch (error) {
+    return error
+   }
+}
+
   export const getSessionDetails = async (sessionId, user) => {
 
     const Stripe = stripe(process.env.STRIPE_SECRET_KEY, {apiVersion:'2022-11-15'})
@@ -38,7 +47,7 @@ export const checkoutPayment = async (params,res) => {
       const session = await Stripe.checkout.sessions.retrieve(sessionId);
 
       if(!session) throw Error("User Not Subscribed")
-      console.log(session)
+      // console.log(session)
 
       const subscription = await Subscription.create({
         strip_id: session.id,
