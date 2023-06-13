@@ -16,7 +16,7 @@ export const isSubscribed = async (req, res, next) => {
         search_count = 10
 
         req.limit = {search_count, profile_count}
-        req.data = {...req.data, limit: 5}
+        req.body.data = {...req.body.data, limit:5, page:0}
         next()
         return
     }
