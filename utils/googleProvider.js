@@ -22,11 +22,11 @@ export const connectPassport = () => {
           email:profile.email
         })
         const tokens = sendTokens(user)
-        console.log(tokens, "new user")
+        // console.log(tokens, "new user")
         return done(null, tokens)
       }else{
         const tokens = sendTokens(user)
-        console.log(tokens, "found user")
+        // console.log(tokens, "found user")
         return done(null, tokens)
       }
     }

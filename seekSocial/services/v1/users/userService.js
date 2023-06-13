@@ -2,6 +2,7 @@ import { sendEmail } from "../../../../utils/sendMail.js";
 import { User } from "../../../models/userModel.js";
 import jwt from "jsonwebtoken"
 import crypto from "crypto"
+import { isSubscribed } from "../../../middlewares/subscriptionMiddleware.js";
 
 
 const login = async (params) => {
@@ -75,16 +76,20 @@ const logout = async (req, res, next) => {
 
 const getProfile = async (id) => {
   try {
-    const user = await User.findById(id);
-    return {name:user.name, email:user.email, _id:user._id};
+    // const user = await User.findById(id);
+
+    let user = await User.aggregate([{ "$match": {_id:id} }, { "$lookup": { "from": "subscriptions", "localField": "_id", "foreignField": "user_id", "as": "subscription" } }]);
+    user = user[0]
+    return {name:user.name, email:user.email, google_id:user.googleId, search_count:user.searchCount, subscription:user.subscription};
   } catch (error) {
     throw error;
   }
 };
 
-const filterService = async (client, data) => {
+const filterService = async (client, data, limit, user) => {
   try {
-    if (data.limit > 500 || (data.page || 0) * (data.limit || 50) > 450) {
+
+    if (data.limit > limit.profile_count || (data.page || 0) * (data.limit || 50) > limit.profile_count) {
       return res.status(400).json({ error: "search limit exceeded" });
     }
 
@@ -129,7 +134,19 @@ const filterService = async (client, data) => {
       body,
     });
 
-    return response;
+    if(!user) return response
+
+    const result = await User.findById(user._id)
+
+    if(result.searchCount > limit.search_count){
+      throw Error("You have Exceed the Search Limit")
+    }else{
+      console.log(result)
+      result.searchCount+=1;
+      await result.save()
+      return response;
+    }
+
   } catch (error) {
     console.error(error);
     throw error;

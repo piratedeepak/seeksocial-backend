@@ -3,7 +3,7 @@ import { register, login, refreshTheToken, getProfile, filterUserData, forgetPas
 import { isAuthenticated } from "../../../middlewares/authMiddleware.js";
 import passport from "passport";
 import { sendTokens } from "../../../../utils/generateTokens.js";
-
+import { isSubscribed, subAuthentication } from "../../../middlewares/subscriptionMiddleware.js";
 
 const router = express.Router();
 
@@ -11,7 +11,7 @@ router.route("/register").post(register)
 router.route("/login").post(login)
 router.route('/refreshtoken').post(refreshTheToken)
 router.route('/myprofile').get( isAuthenticated, getProfile)
-router.route('/search').get(filterUserData)
+router.route('/search').get( subAuthentication, isSubscribed, filterUserData)
 router.route('/forgetpassword').post(forgetPassword)
 router.route('/changepassword/:token').put(changePassword)
 
