@@ -5,7 +5,6 @@ import { checkoutPayment, getPlans, getSessionDetails } from "../../../services/
 export const checkout = async (req, res) => {
    try {
     const data =  await checkoutPayment(req.body, res)
-    return responseCommon(res, 200, "SuccessFully", data, true)
    } catch (error) {
     return responseCommon(res, 400, error.message, null, false)
    }

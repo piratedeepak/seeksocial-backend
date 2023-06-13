@@ -24,8 +24,7 @@ export const checkoutPayment = async (params,res) => {
     res.redirect(303, session.url);
     return session;
   } catch (error) {
-    console.log(error.message);
-    res.status(500).send('Failed to create checkout session');
+    return error
   }
 };
 

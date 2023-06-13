@@ -12,7 +12,7 @@ const getElasticClient = () => {
       });
       resolve(client);
     } catch (error) {
-      console.log("ERROR: Elasticsearch connecting =>", error.message);
+      // console.log("ERROR: Elasticsearch connecting =>", error.message);
       reject(error);
     }
   });

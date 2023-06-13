@@ -86,12 +86,8 @@ const getProfile = async (id) => {
   }
 };
 
-const filterService = async (client, data, user) => {
+const filterService = async (client, data, limit, user) => {
   try {
-
-    const limit = await isSubscribed(user)
-
-    if(!limit) return Error("Internal Server Error")
 
     if (data.limit > limit.profile_count || (data.page || 0) * (data.limit || 50) > limit.profile_count) {
       return res.status(400).json({ error: "search limit exceeded" });

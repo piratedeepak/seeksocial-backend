@@ -61,7 +61,7 @@ export const filterUserData = async (req, res) => {
   try {
     const data = req.body;
     const client = await getElasticClient();
-    const response = await userService.filterService(client, data, req.user);
+    const response = await userService.filterService(client, data, req.limit, req.user);
 
     return responseCommon(res, 200, null, response.hits, true)
   } catch (error) {

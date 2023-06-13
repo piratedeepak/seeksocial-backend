@@ -1,55 +1,64 @@
 import { Subscription } from "../models/SubscriptionModel.js";
-import { User } from "../models/userModel.js";
-import jwt from "jsonwebtoken";
 import { responseCommon } from "../../utils/resComm.js";
 import { isAuthenticated } from "./authMiddleware.js";
 
 
-export const isSubscribed = async (user) => {
+export const isSubscribed = async (req, res, next) => {
 
+   try {
     let profile_count = 0;
     let search_count = 0;
 
-    console.log(user)
+    // console.log(user)
 
-    if(!user){
+    if(!req.user){
         profile_count = 5
         search_count = 10
 
-        return {search_count, profile_count}
-
+        req.limit = {search_count, profile_count}
+        req.data = {...req.data, limit: 5}
+        next()
+        return
     }
 
-    const subscription = await Subscription.find({user_id:user._id})
-
-    console.log(subscription, "iii")
+    const subscription = await Subscription.find({user_id: req.user._id})
 
     if(!subscription.length > 0) {
         profile_count = 500;
         search_count =  10
 
-        return {search_count, profile_count}
-
+        req.limit = {search_count, profile_count}
+        next()
+        return
     }
 
     if(subscription[0].plan_amount/100 === 4.99){
         profile_count=5000;
         search_count = 100;
 
-        return {search_count, profile_count}
+        req.limit = {search_count, profile_count}
+        next()
+        return  
     }
     if(subscription[0].plan_amount/100 === 9.99){
         profile_count = 10000;
         search_count = 250;
 
-        return {search_count, profile_count}
+        req.limit = {search_count, profile_count}
+        next()
+        return
     }
     if(subscription[0].plan_amount/100 ===14.99){
         profile_count = 50000;
         search_count = 2000
 
-        return {search_count, profile_count}
+        req.limit = {search_count, profile_count}
+        next()
+        return
     }
+   } catch (error) {
+   console.log(error.message)
+   }
 
 }
 
@@ -58,6 +67,11 @@ export const isSubscribed = async (user) => {
 export const subAuthentication = async (req, res, next) => {
   try {
     const authToken = req.headers.authorization;
+    if(!authToken || authToken === '' || authToken === 'null'){
+        req.user = undefined
+        next()
+        return
+    }
     const refreshToken = req.headers['x-refresh-token'];
     const accessToken = authToken.split(' ')[1];
     if (accessToken=='null' && !refreshToken) {
